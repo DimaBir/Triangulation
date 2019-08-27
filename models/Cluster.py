@@ -6,8 +6,12 @@ class Cluster:
         :param points: Points list, that belongs to current cluster.
         """
         self.points = points
+        self.reports_ids = None
+        self.beginTimestamp = None
+        self.endTimestamp = None
         self.mean_velocity = None
         self.mean_geo_location = None
+        self.set_parameters()
 
     def __getitem__(self, key):
         """
@@ -16,6 +20,33 @@ class Cluster:
         :return: value of object
         """
         return getattr(self, key)
+
+    def set_parameters(self):
+        """
+
+        :return:
+        """
+        unique = []
+        min_timestamp = None
+        max_timestamp = None
+        for point in self.points:
+
+            # Find oldest sample
+            if min_timestamp is None or point.timestamp <= min_timestamp:
+                min_timestamp = point.timestamp
+
+            # Find youngest sample
+            if max_timestamp is None or point.timestamp >= max_timestamp:
+                max_timestamp = point.timestamp
+
+            if point.sample1_ids[0] not in unique:
+                unique.append(point.sample1_ids[0])
+            if point.sample2_ids[0] not in unique:
+                unique.append(point.sample2_ids[0])
+
+        self.beginTimestamp = min_timestamp
+        self.endTimestamp = max_timestamp
+        self.reports_ids = unique
 
     def calculate_centroid(self):
         """

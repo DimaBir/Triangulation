@@ -1,6 +1,6 @@
 #!flask/bin/python
 import json
-from flask import Flask, jsonify, abort
+from flask import Flask, jsonify, abort, request
 from main import calculate_triangulation
 
 app = Flask(__name__)
@@ -25,6 +25,19 @@ tasks = [
 @app.route('/todo/api/v1.0/tasks', methods=['GET'])
 def get_tasks():
     return jsonify({'tasks': tasks})
+
+
+@app.route('/api/geo-positioning', methods=['POST'])
+def triangulate():
+    content = request.get_json()
+
+    clusters = calculate_triangulation(reports=content, use_new=True)
+    if clusters is None:
+        return json.dumps('EMPTY')
+    if len(clusters) == 0:
+        abort(404)
+
+    return json.dumps(clusters)
 
 
 @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['GET'])

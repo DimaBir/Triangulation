@@ -57,8 +57,7 @@ def read_json(file_path):
             gravity = p["orientation"]["gravity"][1]
             true_heading = p["orientation"]["trueHeading"]
 
-            sample = Sample(sensor_id, timestamp, altitude, latitude, longitude, gravity, true_heading)
-            if not is_in_samples(sample.sample_id, samples):
-                samples.append(sample)
+            if not is_in_samples(str(sensor_id) + str(timestamp), samples):
+                samples.append(Sample(sensor_id, timestamp, altitude, latitude, longitude, gravity, true_heading))
 
     return samples
