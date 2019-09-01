@@ -11,8 +11,7 @@ def triangulate():
     content = request.get_json()
 
     clusters = calculate_triangulation(reports=content)
-    if clusters is None:
-        return json.dumps('EMPTY')
+
     if len(clusters) == 0:
         abort(404)
 
